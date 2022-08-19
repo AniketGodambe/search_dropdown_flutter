@@ -1,425 +1,371 @@
-// import 'package:dio/dio.dart';
-// import 'package:dropdown_search/dropdown_search.dart';
-// import 'package:flutter/material.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/material.dart';
 
-// import 'user_model.dart';
+class DropDownPage extends StatefulWidget {
+  const DropDownPage({Key? key}) : super(key: key);
 
-// class MyHomePage extends StatefulWidget {
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
+  @override
+  State<DropDownPage> createState() => _DropDownPageState();
+}
 
-// class _MyHomePageState extends State<MyHomePage> {
-//   final _formKey = GlobalKey<FormState>();
-//   final _openDropDownProgKey = GlobalKey<DropdownSearchState<String>>();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("DropdownSearch Demo")),
-//       body: Padding(
-//         padding: const EdgeInsets.all(25),
-//         child: Form(
-//           key: _formKey,
-//           autovalidateMode: AutovalidateMode.onUserInteraction,
-//           child: ListView(
-//             padding: const EdgeInsets.all(4),
-//             children: <Widget>[
-//               ///Menu Mode with no searchBox
-//               DropdownSearch<String>(
-//                 validator: (v) => v == null ? "required field" : null,
-//                 hint: "Select a country",
-//                 mode: Mode.MENU,
-//                 showSelectedItem: true,
-//                 items: const [
-//                   "Brazil",
-//                   "Italia (Disabled)",
-//                   "Tunisia",
-//                   'Canada'
-//                 ],
-//                 label: "Menu mode *",
-//                 showClearButton: true,
-//                 onChanged: print,
-//                 popupItemDisabled: (String s) => s.startsWith('I'),
-//                 clearButtonSplashRadius: 20,
-//                 selectedItem: "Tunisia",
-//                 onBeforeChange: (a, b) {
-//                   if (b == null) {
-//                     AlertDialog alert = AlertDialog(
-//                       title: const Text("Are you sure..."),
-//                       content: const Text("...you want to clear the selection"),
-//                       actions: [
-//                         TextButton(
-//                           child: const Text("OK"),
-//                           onPressed: () {
-//                             Navigator.of(context).pop(true);
-//                           },
-//                         ),
-//                         TextButton(
-//                           child: const Text("NOT OK"),
-//                           onPressed: () {
-//                             Navigator.of(context).pop(false);
-//                           },
-//                         ),
-//                       ],
-//                     );
-
-//                     return showDialog<bool>(
-//                         context: context,
-//                         builder: (BuildContext context) {
-//                           return alert;
-//                         });
-//                   }
-
-//                   return Future.value(true);
-//                 },
-//               ),
-//               const Divider(),
-
-//               ///Menu Mode with overriden icon and dropdown buttons
-//               Row(
-//                 children: [
-//                   Expanded(
-//                     flex: 2,
-//                     child: DropdownSearch<String>(
-//                       validator: (v) => v == null ? "required field" : null,
-//                       hint: "Select a country",
-//                       mode: Mode.MENU,
-//                       dropdownSearchDecoration: const InputDecoration(
-//                         filled: true,
-//                         border: UnderlineInputBorder(
-//                           borderSide: BorderSide(color: Color(0xFF01689A)),
-//                         ),
-//                       ),
-//                       showAsSuffixIcons: true,
-//                       clearButtonBuilder: (_) => const Padding(
-//                         padding: EdgeInsets.all(8.0),
-//                         child: Icon(
-//                           Icons.clear,
-//                           size: 24,
-//                           color: Colors.black,
-//                         ),
-//                       ),
-//                       dropdownButtonBuilder: (_) => const Padding(
-//                         padding: EdgeInsets.all(8.0),
-//                         child: Icon(
-//                           Icons.arrow_drop_down,
-//                           size: 24,
-//                           color: Colors.black,
-//                         ),
-//                       ),
-//                       showSelectedItem: true,
-//                       items: const [
-//                         "Brazil",
-//                         "Italia (Disabled)",
-//                         "Tunisia",
-//                         'Canada'
-//                       ],
-//                       label: "Menu mode *",
-//                       showClearButton: true,
-//                       onChanged: print,
-//                       popupItemDisabled: (String s) => s.startsWith('I'),
-//                       selectedItem: "Tunisia",
-//                     ),
-//                   ),
-//                   const Expanded(
-//                       child: TextField(
-//                     decoration: InputDecoration(
-//                       filled: true,
-//                       labelText: "Menu mode *",
-//                       border: UnderlineInputBorder(
-//                         borderSide: BorderSide(color: Color(0xFF01689A)),
-//                       ),
-//                     ),
-//                   ))
-//                 ],
-//               ),
-//               const Divider(),
-//               DropdownSearch<UserModel>(
-//                 searchFieldProps: TextFieldProps(
-//                   controller: TextEditingController(text: 'Mrs'),
-//                 ),
-//                 mode: Mode.BOTTOM_SHEET,
-//                 maxHeight: 700,
-//                 isFilteredOnline: true,
-//                 showClearButton: true,
-//                 showSearchBox: true,
-//                 label: 'User *',
-//                 dropdownSearchDecoration: InputDecoration(
-//                   filled: true,
-//                   fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-//                 ),
-//                 autoValidateMode: AutovalidateMode.onUserInteraction,
-//                 validator: (u) => u == null ? "user field is required " : null,
-//                 onFind: (String filter) => getData(filter),
-//                 onChanged: (data) {
-//                   print(data);
-//                 },
-//                 dropdownBuilder: _customDropDownExample,
-//                 popupItemBuilder: _customPopupItemBuilderExample,
-//                 popupSafeArea: const PopupSafeArea(top: true, bottom: true),
-//                 scrollbarProps: ScrollbarProps(
-//                   isAlwaysShown: true,
-//                   thickness: 7,
-//                 ),
-//               ),
-//               const Divider(),
-
-//               ///custom itemBuilder and dropDownBuilder
-//               DropdownSearch<UserModel>(
-//                 showSelectedItem: true,
-//                 compareFn: (i, s) => i.isEqual(s),
-//                 label: "Person",
-//                 onFind: (String filter) => getData(filter),
-//                 onChanged: (data) {
-//                   print(data);
-//                 },
-//                 dropdownBuilder: _customDropDownExample,
-//                 popupItemBuilder: _customPopupItemBuilderExample2,
-//               ),
-//               const Divider(),
-
-//               ///BottomSheet Mode with no searchBox
-//               DropdownSearch<String>(
-//                 mode: Mode.BOTTOM_SHEET,
-//                 items: const [
-//                   "Brazil",
-//                   "Italia",
-//                   "Tunisia",
-//                   'Canada',
-//                   'Zraoua',
-//                   'France',
-//                   'Belgique'
-//                 ],
-//                 label: "Custom BottomShet mode",
-//                 onChanged: print,
-//                 selectedItem: "Brazil",
-//                 showSearchBox: true,
-//                 searchFieldProps: TextFieldProps(
-//                   decoration: const InputDecoration(
-//                     border: OutlineInputBorder(),
-//                     contentPadding: EdgeInsets.fromLTRB(12, 12, 8, 0),
-//                     labelText: "Search a country1",
-//                   ),
-//                 ),
-//                 popupTitle: Container(
-//                   height: 50,
-//                   decoration: BoxDecoration(
-//                     color: Theme.of(context).primaryColorDark,
-//                     borderRadius: const BorderRadius.only(
-//                       topLeft: Radius.circular(20),
-//                       topRight: Radius.circular(20),
-//                     ),
-//                   ),
-//                   child: const Center(
-//                     child: Text(
-//                       'Country',
-//                       style: TextStyle(
-//                         fontSize: 24,
-//                         fontWeight: FontWeight.bold,
-//                         color: Colors.white,
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//                 popupShape: const RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.only(
-//                     topLeft: Radius.circular(24),
-//                     topRight: Radius.circular(24),
-//                   ),
-//                 ),
-//               ),
-//               const Divider(),
-
-//               ///show favorites on top list
-//               DropdownSearch<UserModel>(
-//                 showSelectedItem: true,
-//                 showSearchBox: true,
-//                 compareFn: (i, s) => i.isEqual(s),
-//                 label: "Person with favorite option",
-//                 onFind: (filter) => getData(filter),
-//                 onChanged: (data) {
-//                   print(data);
-//                 },
-//                 dropdownBuilder: _customDropDownExample,
-//                 popupItemBuilder: _customPopupItemBuilderExample2,
-//                 showFavoriteItems: true,
-//                 favoriteItemsAlignment: MainAxisAlignment.start,
-//                 favoriteItems: (items) {
-//                   return items.where((e) => e.name.contains("Mrs")).toList();
-//                 },
-//                 favoriteItemBuilder: (context, item) {
-//                   return Container(
-//                     padding:
-//                         const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-//                     decoration: BoxDecoration(
-//                         border: Border.all(color: Colors.grey),
-//                         borderRadius: BorderRadius.circular(10),
-//                         color: Colors.grey[100]),
-//                     child: Text(
-//                       item.name,
-//                       textAlign: TextAlign.center,
-//                       style: const TextStyle(color: Colors.indigo),
-//                     ),
-//                   );
-//                 },
-//               ),
-//               const Divider(),
-
-//               ///merge online and offline data in the same list and set custom max Height
-//               DropdownSearch<UserModel>(
-//                 items: [
-//                   UserModel(name: "Offline name1", id: "999"),
-//                   UserModel(name: "Offline name2", id: "0101")
-//                 ],
-//                 maxHeight: 300,
-//                 onFind: (String filter) => getData(filter),
-//                 label: "choose a user",
-//                 onChanged: print,
-//                 showSearchBox: true,
-//               ),
-//               const Divider(),
-
-//               ///open dropdown programmatically
-//               DropdownSearch<String>(
-//                 items: const ["no action", "confirm in the next dropdown"],
-//                 label: "open another dropdown programmatically",
-//                 onChanged: (v) {
-//                   if (v == "confirm in the next dropdown") {
-//                     _openDropDownProgKey.currentState?.openDropDownSearch();
-//                   }
-//                 },
-//               ),
-//               const Padding(padding: EdgeInsets.all(4)),
-//               DropdownSearch<String>(
-//                 key: _openDropDownProgKey,
-//                 items: const ["Yes", "No"],
-//                 label: "confirm",
-//                 showSelectedItem: true,
-//                 dropdownButtonSplashRadius: 20,
-//               ),
-//               Column(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 mainAxisSize: MainAxisSize.min,
-//                 children: [
-//                   ElevatedButton(
-//                       onPressed: () {
-//                         _openDropDownProgKey.currentState?.openDropDownSearch();
-//                       },
-//                       child: const Text("Open dropdownSearch")),
-//                   ElevatedButton(
-//                       onPressed: () {
-//                         _openDropDownProgKey.currentState
-//                             ?.changeSelectedItem("No");
-//                       },
-//                       child: const Text("set to 'NO'")),
-//                   Material(
-//                     child: ElevatedButton(
-//                         onPressed: () {
-//                           _openDropDownProgKey.currentState
-//                               ?.changeSelectedItem("Yes");
-//                         },
-//                         child: const Text("set to 'YES'")),
-//                   ),
-//                   ElevatedButton(
-//                       onPressed: () {
-//                         _openDropDownProgKey.currentState
-//                             ?.changeSelectedItem("Blabla");
-//                       },
-//                       child: const Text("set to 'Blabla'")),
-//                 ],
-//               )
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _customDropDownExample(
-//       BuildContext context, UserModel? item, String itemDesignation) {
-//     if (item == null) {
-//       return Container();
-//     }
-
-//     return Container(
-//       child: (item.avatar == null)
-//           ? const ListTile(
-//               contentPadding: EdgeInsets.all(0),
-//               leading: CircleAvatar(),
-//               title: Text("No item selected"),
-//             )
-//           : ListTile(
-//               contentPadding: const EdgeInsets.all(0),
-//               leading: const CircleAvatar(
-//                   // this does not work - throws 404 error
-//                   // backgroundImage: NetworkImage(item.avatar ?? ''),
-//                   ),
-//               title: Text(item.name),
-//               subtitle: Text(
-//                 item.createdAt.toString(),
-//               ),
-//             ),
-//     );
-//   }
-
-//   Widget _customPopupItemBuilderExample(
-//       BuildContext context, UserModel item, bool isSelected) {
-//     return Container(
-//       margin: const EdgeInsets.symmetric(horizontal: 8),
-//       decoration: !isSelected
-//           ? null
-//           : BoxDecoration(
-//               border: Border.all(color: Theme.of(context).primaryColor),
-//               borderRadius: BorderRadius.circular(5),
-//               color: Colors.white,
-//             ),
-//       child: ListTile(
-//         selected: isSelected,
-//         title: Text(item.name),
-//         subtitle: Text(item.createdAt.toString()),
-//         leading: const CircleAvatar(
-//             // this does not work - throws 404 error
-//             // backgroundImage: NetworkImage(item.avatar ?? ''),
-//             ),
-//       ),
-//     );
-//   }
-
-//   Widget _customPopupItemBuilderExample2(
-//       BuildContext context, UserModel item, bool isSelected) {
-//     return Container(
-//       margin: const EdgeInsets.symmetric(horizontal: 8),
-//       decoration: !isSelected
-//           ? null
-//           : BoxDecoration(
-//               border: Border.all(color: Theme.of(context).primaryColor),
-//               borderRadius: BorderRadius.circular(5),
-//               color: Colors.white,
-//             ),
-//       child: ListTile(
-//         selected: isSelected,
-//         title: Text(item.name),
-//         subtitle: Text(item.createdAt.toString()),
-//         leading: const CircleAvatar(
-//             // this does not work - throws 404 error
-//             // backgroundImage: NetworkImage(item.avatar ?? ''),
-//             ),
-//       ),
-//     );
-//   }
-
-//   Future<List<UserModel>> getData(filter) async {
-//     var response = await Dio().get(
-//       "https://5d85ccfb1e61af001471bf60.mockapi.io/user",
-//       queryParameters: {"filter": filter},
-//     );
-
-//     final data = response.data;
-//     if (data != null) {
-//       return UserModel.fromJsonList(data);
-//     }
-
-//     return [];
-//   }
-// }
+class _DropDownPageState extends State<DropDownPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 100),
+            Text(
+              "Select Country",
+              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 5),
+            Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      width: 1, color: Color.fromARGB(255, 111, 103, 223)),
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.white),
+              child: DropdownSearch<String>(
+                mode: Mode.DIALOG,
+                showSearchBox: true,
+                dropdownButtonBuilder: (_) => const Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Icon(
+                    Icons.arrow_drop_down,
+                    size: 24,
+                    color: Colors.black,
+                  ),
+                ),
+                hint: "Select Country",
+                showSelectedItem: true,
+                dropdownSearchBaseStyle: TextStyle(
+                  fontSize: 16,
+                  color: Colors.blue,
+                ),
+                dropdownSearchDecoration: const InputDecoration(
+                    filled: false, enabledBorder: InputBorder.none),
+                items: [
+                  "Afghanistan",
+                  "Åland Islands",
+                  "Albania",
+                  "Algeria",
+                  "American Samoa",
+                  "Andorra",
+                  "Angola",
+                  "Anguilla",
+                  "Antarctica",
+                  "Antigua and Barbuda",
+                  "Argentina",
+                  "Armenia",
+                  "Aruba",
+                  "Australia",
+                  "Austria",
+                  "Azerbaijan",
+                  "Bahamas (the)",
+                  "Bahrain",
+                  "Bangladesh",
+                  "Barbados",
+                  "Belarus",
+                  "Belgium",
+                  "Belize",
+                  "Benin",
+                  "Bermuda",
+                  "Bhutan",
+                  "Bolivia (Plurinational State of)",
+                  "Bonaire, Sint Eustatius and Saba",
+                  "Bosnia and Herzegovina",
+                  "Botswana",
+                  "Bouvet Island",
+                  "Brazil",
+                  "British Indian Ocean Territory (the)",
+                  "Brunei Darussalam",
+                  "Bulgaria",
+                  "Burkina Faso",
+                  "Burundi",
+                  "Cabo Verde",
+                  "Cambodia",
+                  "Cameroon",
+                  "Canada",
+                  "Cayman Islands (the)",
+                  "Central African Republic (the)",
+                  "Chad",
+                  "Chile",
+                  "China",
+                  "Christmas Island",
+                  "Cocos (Keeling) Islands (the)",
+                  "Colombia",
+                  "Comoros (the)",
+                  "Congo (the Democratic Republic of the)",
+                  "Congo (the)",
+                  "Cook Islands (the)",
+                  "Costa Rica",
+                  "Croatia",
+                  "Cuba",
+                  "Curaçao",
+                  "Cyprus",
+                  "Czechia",
+                  "Côte d'Ivoire",
+                  "Denmark",
+                  "Djibouti",
+                  "Dominica",
+                  "Dominican Republic (the)",
+                  "Ecuador",
+                  "Egypt",
+                  "El Salvador",
+                  "Equatorial Guinea",
+                  "Eritrea",
+                  "Estonia",
+                  "Eswatini",
+                  "Ethiopia",
+                  "Falkland Islands (the) [Malvinas]",
+                  "Faroe Islands (the)",
+                  "Fiji",
+                  "Finland",
+                  "France",
+                  "French Guiana",
+                  "French Polynesia",
+                  "French Southern Territories (the)",
+                  "Gabon",
+                  "Gambia (the)",
+                  "Georgia",
+                  "Germany",
+                  "Ghana",
+                  "Gibraltar",
+                  "Greece",
+                  "Greenland",
+                  "Grenada",
+                  "Guadeloupe",
+                  "Guam",
+                  "Guatemala",
+                  "Guernsey",
+                  "Guinea",
+                  "Guinea-Bissau",
+                  "Guyana",
+                  "Haiti",
+                  "Heard Island and McDonald Islands",
+                  "Holy See (the)",
+                  "Honduras",
+                  "Hong Kong",
+                  "Hungary",
+                  "Iceland",
+                  "India",
+                  "Indonesia",
+                  "Iran (Islamic Republic of)",
+                  "Iraq",
+                  "Ireland",
+                  "Isle of Man",
+                  "Israel",
+                  "Italy",
+                  "Jamaica",
+                  "Japan",
+                  "Jersey",
+                  "Jordan",
+                  "Kazakhstan",
+                  "Kenya",
+                  "Kiribati",
+                  "Korea (the Democratic People's Republic of)",
+                  "Korea (the Republic of)",
+                  "Kuwait",
+                  "Kyrgyzstan",
+                  "Lao People's Democratic Republic (the)",
+                  "Latvia",
+                  "Lebanon",
+                  "Lesotho",
+                  "Liberia",
+                  "Libya",
+                  "Liechtenstein",
+                  "Lithuania",
+                  "Luxembourg",
+                  "Macao",
+                  "Madagascar",
+                  "Malawi",
+                  "Malaysia",
+                  "Maldives",
+                  "Mali",
+                  "Malta",
+                  "Marshall Islands (the)",
+                  "Martinique",
+                  "Mauritania",
+                  "Mauritius",
+                  "Mayotte",
+                  "Mexico",
+                  "Micronesia (Federated States of)",
+                  "Moldova (the Republic of)",
+                  "Monaco",
+                  "Mongolia",
+                  "Montenegro",
+                  "Montserrat",
+                  "Morocco",
+                  "Mozambique",
+                  "Myanmar",
+                  "Namibia",
+                  "Nauru",
+                  "Nepal",
+                  "Netherlands (the)",
+                  "New Caledonia",
+                  "New Zealand",
+                  "Nicaragua",
+                  "Niger (the)",
+                  "Nigeria",
+                  "Niue",
+                  "Norfolk Island",
+                  "Northern Mariana Islands (the)",
+                  "Norway",
+                  "Oman",
+                  "Pakistan",
+                  "Palau",
+                  "Palestine, State of",
+                  "Panama",
+                  "Papua New Guinea",
+                  "Paraguay",
+                  "Peru",
+                  "Philippines (the)",
+                  "Pitcairn",
+                  "Poland",
+                  "Portugal",
+                  "Puerto Rico",
+                  "Qatar",
+                  "Republic of North Macedonia",
+                  "Romania",
+                  "Russian Federation (the)",
+                  "Rwanda",
+                  "Réunion",
+                  "Saint Barthélemy",
+                  "Saint Helena, Ascension and Tristan da Cunha",
+                  "Saint Kitts and Nevis",
+                  "Saint Lucia",
+                  "Saint Martin (French part)",
+                  "Saint Pierre and Miquelon",
+                  "Saint Vincent and the Grenadines",
+                  "Samoa",
+                  "San Marino",
+                  "Sao Tome and Principe",
+                  "Saudi Arabia",
+                  "Senegal",
+                  "Serbia",
+                  "Seychelles",
+                  "Sierra Leone",
+                  "Singapore",
+                  "Sint Maarten (Dutch part)",
+                  "Slovakia",
+                  "Slovenia",
+                  "Solomon Islands",
+                  "Somalia",
+                  "South Africa",
+                  "South Georgia and the South Sandwich Islands",
+                  "South Sudan",
+                  "Spain",
+                  "Sri Lanka",
+                  "Sudan (the)",
+                  "Suriname",
+                  "Svalbard and Jan Mayen",
+                  "Sweden",
+                  "Switzerland",
+                  "Syrian Arab Republic",
+                  "Taiwan (Province of China)",
+                  "Tajikistan",
+                  "Tanzania, United Republic of",
+                  "Thailand",
+                  "Timor-Leste",
+                  "Togo",
+                  "Tokelau",
+                  "Tonga",
+                  "Trinidad and Tobago",
+                  "Tunisia",
+                  "Turkey",
+                  "Turkmenistan",
+                  "Turks and Caicos Islands (the)",
+                  "Tuvalu",
+                  "Uganda",
+                  "Ukraine",
+                  "United Arab Emirates (the)",
+                  "United Kingdom of Great Britain and Northern Ireland (the)",
+                  "United States Minor Outlying Islands (the)",
+                  "United States of America (the)",
+                  "Uruguay",
+                  "Uzbekistan",
+                  "Vanuatu",
+                  "Venezuela (Bolivarian Republic of)",
+                  "Viet Nam",
+                  "Virgin Islands (British)",
+                  "Virgin Islands (U.S.)",
+                  "Wallis and Futuna",
+                  "Western Sahara",
+                  "Yemen",
+                  "Zambia",
+                  "Zimbabwe"
+                ],
+                onChanged: print,
+                popupItemBuilder:
+                    (BuildContext context, String? item, bool isSelected) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      item!,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          decorationColor: Colors.blue,
+                          color: isSelected ? Colors.blue : Colors.blue),
+                    ),
+                  );
+                },
+                searchFieldProps: TextFieldProps(
+                  autocorrect: true,
+                  style: TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.w600),
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.blue),
+                    prefixIcon: const Icon(Icons.search),
+                    border: const OutlineInputBorder(gapPadding: 4),
+                    contentPadding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                  ),
+                ),
+                dropdownBuilder: (context, a, b) {
+                  return a == null
+                      ? const Padding(
+                          padding: EdgeInsets.only(left: 12),
+                          child: Text(
+                            "Select country",
+                            style: TextStyle(
+                                color: Color(0xffBEBDD0),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(left: 12),
+                          child: Text(
+                            a.toString(),
+                            style: const TextStyle(
+                                color: Color(0xff37319B),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15),
+                          ),
+                        );
+                },
+                popupShape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(5),
+                    topRight: Radius.circular(5),
+                    bottomLeft: Radius.circular(5),
+                    bottomRight: Radius.circular(5),
+                  ),
+                ),
+                scrollbarProps: ScrollbarProps(
+                  isAlwaysShown: false,
+                  thickness: 7,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
