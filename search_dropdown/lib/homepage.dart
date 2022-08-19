@@ -29,9 +29,12 @@ class _DropDownPageState extends State<DropDownPage> {
                       width: 1, color: Color.fromARGB(255, 111, 103, 223)),
                   borderRadius: BorderRadius.circular(5),
                   color: Colors.white),
+
+              //DropdownSearch start
               child: DropdownSearch<String>(
                 mode: Mode.DIALOG,
                 showSearchBox: true,
+                //dropdown button code
                 dropdownButtonBuilder: (_) => const Padding(
                   padding: EdgeInsets.all(4),
                   child: Icon(
@@ -46,8 +49,11 @@ class _DropDownPageState extends State<DropDownPage> {
                   fontSize: 16,
                   color: Colors.blue,
                 ),
+                //dropdown field decoration here
                 dropdownSearchDecoration: const InputDecoration(
                     filled: false, enabledBorder: InputBorder.none),
+
+                //data list here
                 items: [
                   "Afghanistan",
                   "Åland Islands",
@@ -299,7 +305,9 @@ class _DropDownPageState extends State<DropDownPage> {
                   "Zambia",
                   "Zimbabwe"
                 ],
+
                 onChanged: print,
+                //popup UI changes here
                 popupItemBuilder:
                     (BuildContext context, String? item, bool isSelected) {
                   return Padding(
@@ -315,6 +323,7 @@ class _DropDownPageState extends State<DropDownPage> {
                     ),
                   );
                 },
+                //popup search field design
                 searchFieldProps: TextFieldProps(
                   autocorrect: true,
                   style: TextStyle(
@@ -326,6 +335,8 @@ class _DropDownPageState extends State<DropDownPage> {
                     contentPadding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
                   ),
                 ),
+
+                //hint and selected item from dropdown style
                 dropdownBuilder: (context, a, b) {
                   return a == null
                       ? const Padding(
@@ -349,6 +360,7 @@ class _DropDownPageState extends State<DropDownPage> {
                           ),
                         );
                 },
+                //popup shape custom
                 popupShape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(5),
