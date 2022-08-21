@@ -16,7 +16,6 @@ class _DropDownPageState extends State<DropDownPage> {
   List<String> countrys = [];
   @override
   void initState() {
-    // print(c.countrys);
     countrys = c.countrys;
     super.initState();
   }
